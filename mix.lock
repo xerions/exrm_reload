@@ -1,0 +1,3 @@
+%{"conform": {:hex, :conform, "0.16.0"},
+  "meck": {:git, "https://github.com/eproxus/meck.git", "0845277398b8326f9dddddd9fc3cf73467ba6877", []},
+  "neotoma": {:hex, :neotoma, "1.7.3"}}
