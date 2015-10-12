@@ -1,4 +1,4 @@
-# ExrmReload
+# ExrmReload [![Build Status](https://travis-ci.org/surik/exrm_reload.svg)](https://travis-ci.org/surik/exrm_reload)
 
 Build new sys.config from confrom and apply it in runtume. 
 It uses `conform_schema` and `conform_config` command line flags which are set on [exrm](https://github.com/bitwalker/exrm) startup script.
