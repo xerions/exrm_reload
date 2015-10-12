@@ -25,11 +25,10 @@ defmodule ReleaseManager.Reload do
 
 
   defp generate_sys_config(schema, config, sys_config) do
-    #{:ok, config} = Conform.Conf.from_file(config |> List.to_string)
-    config = config |> List.to_string |> Conform.Parse.file
+    config = config |> List.to_string |> :conf_parse.file
     schema = schema |> List.to_string |> Conform.Schema.load! |> Dict.delete(:import)
     :code.is_loaded(Conform.SysConfig) == false and :code.load_file(Conform.SysConfig)
-    case function_exported?(Conform.SysConfig, :read, 3) do
+    case function_exported?(Conform.SysConfig, :read, 1) do
       true ->  
         {:ok, [conf]} = Conform.SysConfig.read(sys_config |> List.to_string) 
         final = Conform.Translate.to_config(schema, conf, config)
