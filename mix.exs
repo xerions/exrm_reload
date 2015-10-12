@@ -17,6 +17,5 @@ defmodule ExrmReload.Mixfile do
   defp deps do
     [{:conform, "~> 0.16.0"},
      {:meck, github: "eproxus/meck", only: :test}]
-     #{:test_application, path: "test/test_application", only: :test}]
   end
 end

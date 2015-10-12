@@ -1,8 +1,0 @@
-%{"bbmustache": {:hex, :bbmustache, "1.0.3"},
-  "conform": {:hex, :conform, "0.16.0"},
-  "erlware_commons": {:hex, :erlware_commons, "0.15.0"},
-  "exrm": {:git, "https://github.com/surik/exrm.git", "cbbce286207125c416049a19d7713cbe3fc1f7cd", [branch: "conform_args_to_command_line"]},
-  "getopt": {:hex, :getopt, "0.8.2"},
-  "neotoma": {:hex, :neotoma, "1.7.3"},
-  "providers": {:hex, :providers, "1.4.1"},
-  "relx": {:hex, :relx, "3.5.0"}}
