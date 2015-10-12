@@ -17,7 +17,7 @@ defmodule ReleaseManager.Reload do
   def run(applications) do
     {:ok, [[schema]]} = :init.get_argument(:conform_schema)
     {:ok, [[config]]} = :init.get_argument(:conform_config)
-    {:ok, [[sys_config]]} = init.get_argument(:config)
+    {:ok, [[sys_config]]} = :init.get_argument(:config)
     generate_sys_config(schema, config, sys_config) 
     |> check_config!
     |> reload(applications)
