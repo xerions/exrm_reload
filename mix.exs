@@ -15,7 +15,6 @@ defmodule ExrmReload.Mixfile do
   end
 
   defp deps do
-    [{:conform, "~> 0.16.0"},
-     {:meck, github: "eproxus/meck", only: :test}]
+    [{:conform, github: "xerions/conform", branch: "master"}]
   end
 end
