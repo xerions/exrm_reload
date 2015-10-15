@@ -6,9 +6,8 @@ defmodule ExrmReloadTest do
     {:ok, _} = :net_kernel.start([:master, :longnames])
     true = :erlang.set_cookie(node, :test_application)
     System.cmd("mix", ["do", "deps.get,", "compile,", "release"], [cd: "test/test_application"])
-    :os.cmd('./test/test_application/rel/test_application/bin/test_application start')
-    :timer.sleep(3000)
-    :net_adm.ping :"test_application@127.0.0.1"
+    :os.cmd('./test/test_application/rel/test_application/bin/test_application start') |> IO.inspect
+    :pong = ping
     on_exit fn -> 
       :os.cmd('./test/test_application/rel/test_application/bin/test_application stop')
       System.cmd("rm", ["-Rf", "deps", "_build", "rel"], [cd: "test/test_application"])
@@ -30,5 +29,14 @@ defmodule ExrmReloadTest do
 
   defp rpc(module, function, args \\ []) do
     :rpc.call(:"test_application@127.0.0.1", module, function, args)
+  end
+
+  defp ping(), do: ping(3)
+  defp ping(n) do
+    :timer.sleep(5000)
+    case :net_adm.ping :"test_application@127.0.0.1" do
+      :pong -> :pong
+      _ -> if n < 0, do: :pang, else: ping(n-1)
+    end
   end
 end
