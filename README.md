@@ -7,19 +7,25 @@ It uses `conform_schema` and `conform_config` command line flags which are set o
 
 1. Add exrm_reload to your list of dependencies in mix.exs:
 
+    ```elixir
     def deps do
         [{:exrm_reload, github: "surik/exrm_reload"}]
     end
+    ```
 
 2. Ensure exrm_reload is started before your application:
 
+    ```elixir
     def application do
         [applications: [:exrm_reload]]
     end
+    ```
 
-3. Run reconfiguration when you want it.
+3. Run reconfiguration when you want it:
 
+    ```
     > ReleaseManager.Reload.run
+    ```
 
 or you can specify application's list for reconfiguration:
 
