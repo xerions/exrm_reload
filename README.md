@@ -23,14 +23,18 @@ It uses `conform_schema` and `conform_config` command line flags which are set o
 
 3. Run reconfiguration when you want it:
 
-    ```
-    > ReleaseManager.Reload.run
-    ```
+	```elixir
+	> ReleaseManager.Reload.run
+	```
 
-or you can specify application's list for reconfiguration:
+	or you can specify application's list for reconfiguration:
 
-    > ReleaseManager.Reload.run [:hello, :exd, :ecdo]
+	```elixir
+	> ReleaseManager.Reload.run [:hello, :exd, :ecdo]
+	```
 
 It works with the releases are builded via `exrm`. You just call it by rpc from OS shell:
 
-    $ you_application rpc ReleaseManager.Reload run
+	$ you_application rpc ReleaseManager.Reload run
+
+The test application uses xerions forks of [exrm](https://github.com/xerions/exrm) and [conform](https://github.com/xerions/conform) but it can work with the original exrm version `>= 0.19.7` and conform. Just override it.
