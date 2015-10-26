@@ -18,6 +18,10 @@ defmodule ReleaseManager.Reload do
     {:ok, [[schema]]} = :init.get_argument(:conform_schema)
     {:ok, [[config]]} = :init.get_argument(:conform_config)
     {:ok, [[sys_config]]} = :init.get_argument(:config)
+    case :init.get_argument(:running_conf) do
+      {:ok, [[running_conf]]} -> File.copy! config, running_conf
+      _ -> :skip
+    end 
     generate_sys_config(schema, config, sys_config) 
     |> check_config!
     |> reload(applications)
@@ -35,7 +39,8 @@ defmodule ReleaseManager.Reload do
         Conform.SysConfig.write(sys_config, final) == :ok and sys_config
       false -> 
         {:ok, [conf]} = Conform.Config.read(sys_config |> List.to_string) 
-        final = Conform.Translate.to_config(conf, config, schema)
+        translated = Conform.Translate.to_config(conf, config, schema)
+        final = Conform.Config.merge(config, translated)
         Conform.Config.write(sys_config, final) == :ok and sys_config
     end
   end
