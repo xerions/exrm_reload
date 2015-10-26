@@ -40,7 +40,7 @@ defmodule ReleaseManager.Reload do
       false -> 
         {:ok, [conf]} = Conform.Config.read(sys_config |> List.to_string) 
         translated = Conform.Translate.to_config(conf, config, schema)
-        final = Conform.Config.merge(config, translated)
+        final = Conform.Config.merge(conf, translated)
         Conform.Config.write(sys_config, final) == :ok and sys_config
     end
   end

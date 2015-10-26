@@ -3,7 +3,7 @@ defmodule ExrmReload.Mixfile do
 
   def project do
     [app: :exrm_reload,
-     version: "0.2.0",
+     version: "0.2.1",
      elixir: ">= 1.0.5",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
