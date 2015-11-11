@@ -12,7 +12,7 @@ defmodule ExrmReload.Watcher do
   end
 
   def handle_info({_, {:fs, :file_event}, {file, _}}, state) do
-    if Path.extname(file) == ".conf" do
+    if Path.extname(file) == ".conf" or Application.get_env(:exrm_reload, :dev) do
       Logger.info "configuration changes are detected, reloading"
       ReleaseManager.Reload.run()
     end

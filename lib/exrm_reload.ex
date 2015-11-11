@@ -21,8 +21,13 @@ defmodule ExrmReload do
   end
 
   defp start_watcher() do
-    {:ok, [[config]]} = :init.get_argument(:conform_config)
-    supervisor = supervisor(:fs, [:exrm_reload_watcher, Path.dirname(config) |> to_char_list], id: :exrm_reload_watcher)
+    path = if Application.get_env(:exrm_reload, :dev) do
+        Path.expand("config")
+      else
+        {:ok, [[config]]} = :init.get_argument(:conform_config)
+        Path.dirname(config) |> to_char_list
+    end
+    supervisor = supervisor(:fs, [:exrm_reload_watcher, path], id: :exrm_reload_watcher)
     Supervisor.start_child(ExrmReload.Supervisor, supervisor)
     Supervisor.start_child(ExrmReload.Supervisor, worker(ExrmReload.Watcher, []))
     :ok

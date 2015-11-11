@@ -1,4 +1,5 @@
 use Mix.Config
 
 config :exrm_reload,
-  watch: false
+  watch: false,
+  dev: false
