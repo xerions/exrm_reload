@@ -1,7 +1,7 @@
 defmodule ReleaseManager.Reload do
   @moduledoc """
-  Reload plugin for EXRM. 
-  
+  Reload plugin for EXRM.
+
   It works at the runtime system.
   It generates new sys.config by conform config and schema and applies changes via application_controller.
 
@@ -21,24 +21,23 @@ defmodule ReleaseManager.Reload do
     case :init.get_argument(:running_conf) do
       {:ok, [[running_conf]]} -> File.copy! config, running_conf
       _ -> :skip
-    end 
-    generate_sys_config(schema, config, sys_config) 
+    end
+    generate_sys_config(schema, config, sys_config)
     |> check_config!
     |> reload(applications)
   end
-
 
   defp generate_sys_config(schema, config, sys_config) do
     config = config |> List.to_string |> :conf_parse.file
     schema = schema |> List.to_string |> Conform.Schema.load! |> Dict.delete(:import)
     :code.is_loaded(Conform.SysConfig) == false and :code.load_file(Conform.SysConfig)
     case function_exported?(Conform.SysConfig, :read, 1) do
-      true ->  
-        {:ok, [conf]} = Conform.SysConfig.read(sys_config |> List.to_string) 
+      true ->
+        {:ok, [conf]} = Conform.SysConfig.read(sys_config |> List.to_string)
         final = Conform.Translate.to_config(schema, conf, config)
         Conform.SysConfig.write(sys_config, final) == :ok and sys_config
-      false -> 
-        {:ok, [conf]} = Conform.Config.read(sys_config |> List.to_string) 
+      false ->
+        {:ok, [conf]} = Conform.Config.read(sys_config |> List.to_string)
         translated = Conform.Translate.to_config(conf, config, schema)
         final = Conform.Config.merge(conf, translated)
         Conform.Config.write(sys_config, final) == :ok and sys_config
