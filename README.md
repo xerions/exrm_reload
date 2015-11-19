@@ -35,6 +35,6 @@ It uses `conform_schema` and `conform_config` command line flags which are set o
 
 It works with the releases are builded via `exrm`. You just call it by rpc from OS shell:
 
-	$ you_application rpc ReleaseManager.Reload run
+	$ you_application rpc Elixir.ReleaseManager.Reload run
 
 The test application uses xerions forks of [exrm](https://github.com/xerions/exrm) and [conform](https://github.com/xerions/conform) but it can work with the original exrm version `>= 0.19.7` and conform. Just override it.
