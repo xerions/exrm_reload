@@ -11,10 +11,12 @@ defmodule ExrmReload.Mixfile do
   end
 
   def application do
-    [applications: [:conform]]
+    [applications: [:logger, :conform, :fs],
+     mod: {ExrmReload, []}]
   end
 
   defp deps do
-    [{:conform, github: "xerions/conform", branch: "master"}]
+    [{:conform, github: "xerions/conform", branch: "master"},
+     {:fs, github: "liveforeverx/fs", branch: "master"}]
   end
 end

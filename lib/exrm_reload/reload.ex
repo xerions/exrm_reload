@@ -1,7 +1,7 @@
 defmodule ReleaseManager.Reload do
   @moduledoc """
-  Reload plugin for EXRM. 
-  
+  Reload plugin for EXRM.
+
   It works at the runtime system.
   It generates new sys.config by conform config and schema and applies changes via application_controller.
 
@@ -15,30 +15,31 @@ defmodule ReleaseManager.Reload do
 
   @doc "Reload the configuration for list of application."
   def run(applications) do
-    {:ok, [[schema]]} = :init.get_argument(:conform_schema)
-    {:ok, [[config]]} = :init.get_argument(:conform_config)
-    {:ok, [[sys_config]]} = :init.get_argument(:config)
-    case :init.get_argument(:running_conf) do
-      {:ok, [[running_conf]]} -> File.copy! config, running_conf
-      _ -> :skip
-    end 
-    generate_sys_config(schema, config, sys_config) 
-    |> check_config!
-    |> reload(applications)
+    if Application.get_env(:exrm_reload, :dev) do
+      Mix.Config.read!("config/config.exs")
+    else
+      {:ok, [[schema]]} = :init.get_argument(:conform_schema)
+      {:ok, [[config]]} = :init.get_argument(:conform_config)
+      {:ok, [[sys_config]]} = :init.get_argument(:config)
+      case :init.get_argument(:running_conf) do
+        {:ok, [[running_conf]]} -> File.copy! config, running_conf
+        _ -> :skip
+      end
+      generate_sys_config(schema, config, sys_config) |> check_config!
+    end |> reload(applications)
   end
-
 
   defp generate_sys_config(schema, config, sys_config) do
     config = config |> List.to_string |> :conf_parse.file
     schema = schema |> List.to_string |> Conform.Schema.load! |> Dict.delete(:import)
     :code.is_loaded(Conform.SysConfig) == false and :code.load_file(Conform.SysConfig)
     case function_exported?(Conform.SysConfig, :read, 1) do
-      true ->  
-        {:ok, [conf]} = Conform.SysConfig.read(sys_config |> List.to_string) 
+      true ->
+        {:ok, [conf]} = Conform.SysConfig.read(sys_config |> List.to_string)
         final = Conform.Translate.to_config(schema, conf, config)
         Conform.SysConfig.write(sys_config, final) == :ok and sys_config
-      false -> 
-        {:ok, [conf]} = Conform.Config.read(sys_config |> List.to_string) 
+      false ->
+        {:ok, [conf]} = Conform.Config.read(sys_config |> List.to_string)
         translated = Conform.Translate.to_config(conf, config, schema)
         final = Conform.Config.merge(conf, translated)
         Conform.Config.write(sys_config, final) == :ok and sys_config
@@ -67,14 +68,19 @@ defmodule ReleaseManager.Reload do
     {:ok, loaded_app_apec} = :application.get_all_key(application)
     case :code.where_is_file(Atom.to_char_list(application) ++ '.app') do
       :non_existing -> loaded_app_apec
-      app_spec_path when is_list(app_spec_path) -> parse_app_file(app_spec_path)
+      app_spec_path when is_list(app_spec_path) -> parse_app_file(application, app_spec_path)
     end
   end
 
-  defp parse_app_file(app_spec_path) do
+  defp parse_app_file(application, app_spec_path) do
     case :file.consult(app_spec_path) do
-      {:ok, [{:application, _, spec}]} -> spec
-      {:error, _Reason} -> :incorrect_spec
+      {:ok, [{:application, _, spec}]} ->
+        spec
+      {:error, :enotdir} ->
+        {:ok, spec} = :application.get_all_key(application)
+        spec
+      {:error, _reason} ->
+        :incorrect_spec
     end
   end
 

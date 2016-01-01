@@ -8,7 +8,7 @@ defmodule ExrmReloadTest do
     System.cmd("mix", ["do", "deps.get,", "compile,", "release"], [cd: "test/test_application"])
     :os.cmd('./test/test_application/rel/test_application/bin/test_application start') |> IO.inspect
     :pong = ping
-    on_exit fn -> 
+    on_exit fn ->
       :os.cmd('./test/test_application/rel/test_application/bin/test_application stop')
       System.cmd("rm", ["-Rf", "deps", "_build", "rel"], [cd: "test/test_application"])
     end
@@ -17,14 +17,20 @@ defmodule ExrmReloadTest do
   test "test_application" do
     assert true == rpc(Application, :get_env, [:test_application, :test_value])
     assert 10 == rpc(Application, :get_env, [:test_application, :test_value2])
-    
+
     {:ok, [[conf]]} = rpc(:init, :get_argument, [:conform_config])
-    conf |> List.to_string |> File.write!("test_value = false")
+    conf_file = conf |> List.to_string
+    File.write!(conf_file, "test_value = false\nconfig.watch = true\n")
     assert :ok == rpc(ReleaseManager.Reload, :run)
-    
+
     assert false == rpc(Application, :get_env, [:test_application, :test_value])
     assert 10 == rpc(Application, :get_env, [:test_application, :test_value2])
     assert "new" == rpc(Application, :get_env, [:test_application, :new_value])
+
+    :timer.sleep(5000) # time to activate watcher
+    File.write!(conf_file, "test_value = true\nconfig.watch = true\n")
+    :timer.sleep(5000)
+    assert true == rpc(Application, :get_env, [:test_application, :test_value])
   end
 
   defp rpc(module, function, args \\ []) do
