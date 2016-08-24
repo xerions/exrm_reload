@@ -1,6 +1,6 @@
 # ExrmReload [![Build Status](https://travis-ci.org/xerions/exrm_reload.svg)](https://travis-ci.org/xerions/exrm_reload)
 
-Build new sys.config from confrom config and apply it at runtume. 
+Build new sys.config from [conform](https://github.com/bitwalker/conform) config and apply it at runtume. 
 It uses `conform_schema` and `conform_config` command line flags which are set on [exrm](https://github.com/bitwalker/exrm) startup script.
 
 ## Usage
